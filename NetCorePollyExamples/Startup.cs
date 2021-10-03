@@ -1,18 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using NetCorePollyExamples.HttpClients;
+using NetCorePollyExamples.Extensions;
+using NetCorePollyExamples.Services;
 using Refit;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace NetCorePollyExamples
 {
@@ -28,12 +24,16 @@ namespace NetCorePollyExamples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NetCorePollyExamples", Version = "v1" });
             });
+
+            services.AddScoped<ITokenService, TokenService>();
+            services.Decorate<ITokenService, ResilientTokenService>();
+
+            services.AddLogging();
 
             services.AddRefitClient<IExternalService>()
                 .ConfigureHttpClient(client =>

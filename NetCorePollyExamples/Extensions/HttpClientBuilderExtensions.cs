@@ -8,7 +8,7 @@ using Serilog;
 using System;
 using System.Net.Http;
 
-namespace NetCorePollyExamples.HttpClients
+namespace NetCorePollyExamples.Extensions
 {
     public static class HttpClientBuilderExtensions
     {

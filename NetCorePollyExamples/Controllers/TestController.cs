@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NetCorePollyExamples.HttpClients;
+using NetCorePollyExamples.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -13,11 +13,16 @@ namespace NetCorePollyExamples.Controllers
 
         private readonly ILogger<TestController> _logger;
         private readonly IExternalService _externalService;
+        private readonly ITokenService _tokenService;
 
-        public TestController(ILogger<TestController> logger, IExternalService externalService)
+        public TestController(
+            ILogger<TestController> logger,
+            IExternalService externalService,
+            ITokenService tokenService)
         {
             _logger = logger;
             _externalService = externalService;
+            _tokenService = tokenService;
         }
 
         [HttpGet("slow")]
@@ -41,6 +46,21 @@ namespace NetCorePollyExamples.Controllers
             {
                 await _externalService.Unstable();
                 return "OK";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
+        [HttpPost("token-validate")]
+        public async Task<string> TokenValidade([FromQuery]string token)
+        {
+            try
+            {
+                var result = await _tokenService.Validate(token);
+                return result.ToString();
             }
             catch (Exception ex)
             {

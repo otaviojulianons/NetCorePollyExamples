@@ -1,7 +1,7 @@
 ﻿using Refit;
 using System.Threading.Tasks;
 
-namespace NetCorePollyExamples.HttpClients
+namespace NetCorePollyExamples.Services
 {
     public interface IExternalService
     {
